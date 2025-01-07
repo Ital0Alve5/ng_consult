@@ -1,0 +1,43 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        layer:
+          - core
+          - auth
+          - hotels
+          - reservations
+          - app
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 22.3.0
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install dependencies for ${{ matrix.layer }}
+        run: cd ${{ matrix.layer }} && pnpm install
+
+      - name: Run ESLint for ${{ matrix.layer }}
+        run: cd ${{ matrix.layer }} && pnpm eslint .
+
+      - name: Run tests for ${{ matrix.layer }}
+        run: cd ${{ matrix.layer }} && pnpm test
