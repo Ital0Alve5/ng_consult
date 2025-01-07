@@ -27,17 +27,12 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/.pnpm-store
-          key: pnpm-store-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          key: pnpm-store-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
           restore-keys: |
             pnpm-store-${{ runner.os }}-
 
       - name: Install dependencies for all layers
-        run: |
-          cd core && pnpm install --store ~/.pnpm-store
-          cd ../hotels && pnpm install --store ~/.pnpm-store
-          cd ../auth && pnpm install --store ~/.pnpm-store
-          cd ../reservations && pnpm install --store ~/.pnpm-store
-          cd ../app && pnpm install --store ~/.pnpm-store
+        run: pnpm install --store ~/.pnpm-store
 
   test:
     runs-on: ubuntu-latest
@@ -59,13 +54,11 @@ jobs:
         with:
           node-version: 22.3.0
 
-      - name: Restore node_modules cache
+      - name: Restore PNPM Store Cache
         uses: actions/cache@v3
         with:
-          path: ${{ matrix.layer }}/node_modules
-          key: ${{ runner.os }}-${{ matrix.layer }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-${{ matrix.layer }}-pnpm-
+          path: ~/.pnpm-store
+          key: pnpm-store-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
 
       - name: Run tests for ${{ matrix.layer }}
         run: cd ${{ matrix.layer }} && pnpm test
