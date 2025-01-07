@@ -42,62 +42,16 @@
 import { CircleChevronLeft } from "lucide-vue-next";
 import formatCurrency from "@ng_consult/core/utils/format/formatCurrency";
 
-interface Booking {
-  checkIn: string;
-  checkOut: string;
-}
-
-interface Hotel {
-  id: number;
-  name: string;
-  description: string;
-  price: number;
-  rating: number;
-  photo: string;
-  location: string;
-  capacity: number;
-  rooms: number;
-  bathrooms: number;
-  suite: number;
-  area: number;
-  bookings: Booking[];
-  amenities: string[];
-}
-
-const comparedHotels = ref<Hotel[]>([]);
-const isMobile = ref(false);
 const route = useRoute();
 const hotelIds = route.query.ids
   ? (route.query.ids as string).split(",").map(Number)
   : [];
 
-const justifyStyle = computed(() => {
-  const count = comparedHotels.value.length;
-  return count < 4 ? "center" : "start";
-});
+const { isMobile } = useResponsive(1500);
+const { comparedHotels, fetchComparedHotels } = useCompareHotels();
+const { justifyStyle } = useJustifyStyle(comparedHotels);
 
-function checkMobileView() {
-  isMobile.value = window.matchMedia("(max-width: 1500px)").matches;
-}
-
-onMounted(async () => {
-  checkMobileView();
-  window.addEventListener("resize", checkMobileView);
-
-  if (hotelIds.length > 0) {
-    try {
-      const response = await $fetch<{ hotels: Hotel[] }>(
-        `/api/hotels/compare?ids=${hotelIds.join(",")}`
-      );
-      comparedHotels.value = response.hotels;
-    } catch (error) {
-      console.error("Erro ao buscar os hotéis para comparação:", error);
-      comparedHotels.value = [];
-    }
-  }
-});
-
-onUnmounted(() => {
-  window.removeEventListener("resize", checkMobileView);
+onMounted(() => {
+  fetchComparedHotels(hotelIds);
 });
 </script>

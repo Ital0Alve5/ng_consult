@@ -1,5 +1,3 @@
-import { reactive } from "vue";
-
 interface Field {
   name: string;
   initialValue?: string | number;

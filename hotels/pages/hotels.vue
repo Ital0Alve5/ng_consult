@@ -32,7 +32,17 @@
       </div>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 my-8">
+    <NuxtImg
+      v-if="isLoading"
+      src="/loader.svg"
+      class="mx-auto mt-20"
+      width="80"
+      height="80"
+    />
+
+    <div
+      class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 my-8 min-h-[651px]"
+    >
       <HotelCard
         v-for="hotel in sortedHotels"
         :id="hotel.id"
@@ -51,128 +61,33 @@
           handleCompareHotel($event as boolean, hotel.id)
         "
       />
+      <p v-if="sortedHotels.length === 0 && !isLoading" class="text-white">
+        Nenhum hotel encontrado!
+      </p>
     </div>
   </div>
 </template>
 <script setup lang="ts">
-import type { DateRange } from "radix-vue";
 import formatCurrency from "@ng_consult/core/utils/format/formatCurrency";
 import ButtonLink from "@ng_consult/app/components/ui/button/ButtonLink.vue";
 
-interface Booking {
-  checkIn: string;
-  checkOut: string;
-}
-
-interface Hotel {
-  id: number;
-  name: string;
-  description: string;
-  price: number;
-  rating: number;
-  photo: string;
-  location: string;
-  capacity: number;
-  rooms: number;
-  bookings: Booking[];
-  amenities: string[];
-}
-
-const comparedHotels = ref<number[]>([]);
-const toggleComparing = () => {
-  isComparing.value = !isComparing.value;
-
-  comparedHotels.value = [];
-};
-
-const goToComparison = () => {
-  const queryString = comparedHotels.value.join(",");
-  return `/compare?ids=${queryString}`;
-};
-
-const handleCompareHotel = ($event: boolean, hotelId: number) => {
-  if ($event) {
-    comparedHotels.value.push(hotelId);
-    return;
-  }
-
-  comparedHotels.value = comparedHotels.value.filter((id) => id !== hotelId);
-};
-
 const hotels = ref<Hotel[]>([]);
-const isComparing = ref(false);
 
-const filters = ref({
-  name: "",
-  checkIn: "",
-  checkOut: "",
-  rooms: 1,
-  guests: 1,
-});
-
-const sortCriteria = ref("suggestion");
-
-const filteredHotels = computed(() => {
-  return hotels.value.filter((hotel: Hotel) => {
-    if (
-      filters.value.name.trim() &&
-      !hotel.name
-        .toLowerCase()
-        .trim()
-        .includes(filters.value.name.toLowerCase().trim())
-    ) {
-      return false;
-    }
-
-    if (filters.value.guests > hotel.capacity) {
-      return false;
-    }
-
-    if (filters.value.rooms > hotel.rooms) {
-      return false;
-    }
-
-    if (filters.value.checkIn && filters.value.checkOut) {
-      const checkInDate = new Date(filters.value.checkIn);
-      const checkOutDate = new Date(filters.value.checkOut);
-
-      const isAvailable = hotel.bookings.every((booking) => {
-        const bookingCheckIn = new Date(booking.checkIn);
-        const bookingCheckOut = new Date(booking.checkOut);
-
-        return checkOutDate <= bookingCheckIn || checkInDate >= bookingCheckOut;
-      });
-
-      if (!isAvailable) {
-        return false;
-      }
-    }
-
-    return true;
-  });
-});
-
-const sortedHotels = computed(() => {
-  const hotelsToSort = [...filteredHotels.value];
-  if (sortCriteria.value === "lowestPrice") {
-    return hotelsToSort.sort((a, b) => a.price - b.price);
-  }
-  if (sortCriteria.value === "highestPrice") {
-    return hotelsToSort.sort((a, b) => b.price - a.price);
-  }
-  if (sortCriteria.value === "lowestRating") {
-    return hotelsToSort.sort((a, b) => a.rating - b.rating);
-  }
-  if (sortCriteria.value === "highestRating") {
-    return hotelsToSort.sort((a, b) => b.rating - a.rating);
-  }
-  return hotelsToSort;
-});
+const { filters, sortCriteria, sortedHotels } = useHotelFilters(hotels);
+const {
+  comparedHotels,
+  isComparing,
+  toggleComparing,
+  handleCompareHotel,
+  goToComparison,
+} = useHotelComparison();
+const { isLoading } = useLoading();
 
 onMounted(async () => {
   const response = await $fetch<{ hotels: Hotel[] }>("/api/hotels", {
     method: "GET",
   });
+
   hotels.value = response.hotels;
 });
 
