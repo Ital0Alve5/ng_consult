@@ -54,6 +54,9 @@ jobs:
         with:
           node-version: 22.3.0
 
+      - name: Install pnpm
+        run: npm install -g pnpm
+
       - name: Restore PNPM Store Cache
         uses: actions/cache@v3
         with:
