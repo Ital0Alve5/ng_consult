@@ -23,26 +23,21 @@ jobs:
       - name: Install pnpm
         run: npm install -g pnpm
 
-      - name: Cache node_modules
+      - name: Cache PNPM Store
         uses: actions/cache@v3
         with:
-          path: |
-            core/node_modules
-            auth/node_modules
-            hotels/node_modules
-            reservations/node_modules
-            app/node_modules
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          path: ~/.pnpm-store
+          key: pnpm-store-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
-            ${{ runner.os }}-pnpm-
+            pnpm-store-${{ runner.os }}-
 
       - name: Install dependencies for all layers
         run: |
-          cd core && pnpm install
-          cd ../auth && pnpm install
-          cd ../hotels && pnpm install
-          cd ../reservations && pnpm install
-          cd ../app && pnpm install
+          cd core && pnpm install --store ~/.pnpm-store
+          cd ../hotels && pnpm install --store ~/.pnpm-store
+          cd ../auth && pnpm install --store ~/.pnpm-store
+          cd ../reservations && pnpm install --store ~/.pnpm-store
+          cd ../app && pnpm install --store ~/.pnpm-store
 
   test:
     runs-on: ubuntu-latest
