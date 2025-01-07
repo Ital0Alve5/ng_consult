@@ -76,18 +76,24 @@ Foca em fluxos de reserva, incluindo checkout e atualizações de status.
    cd ng_consult
    ```
 
-2. Instale as dependências:
+2. Instale as dependências do app principal:
    ```bash
    cd app
    pnpm install
    ```
+   
+2. Instale as dependências em, ao menos, uma layer e escolha para sobrescrever o node_modules:
+   ```bash
+   cd auth
+   pnpm install
+   ```
 
-3. Execute o servidor de desenvolvimento no app:
+4. Execute o servidor de desenvolvimento no app:
    ```bash
    pnpm run dev
    ```
    
-4. Foram criados testes unitários básicos para os componentes. Eles são definidos para cada camada usando **Vitest**. Execute testes rodando, em cada camada, o comando:
+5. Foram criados testes unitários básicos para os componentes. Eles são definidos para cada camada usando **Vitest**. Execute testes rodando, em cada camada, o comando:
    ```bash
    pnpm test
    ```
