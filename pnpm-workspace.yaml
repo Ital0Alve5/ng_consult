@@ -1,0 +1,6 @@
+packages:
+  - 'app'
+  - 'auth'
+  - 'core'
+  - 'hotels'
+  - 'reservations'
