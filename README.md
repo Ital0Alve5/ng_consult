@@ -12,7 +12,7 @@ O projeto foi construído usando **Nuxt 3** com uma estrutura de monorepo, utili
 ## Estrutura do Projeto
 
 ```plaintext
-NG_CONSULT/
+NT_CONSULT/
 ├── app/               # Camada principal da aplicação
 ├── auth/              # Camada de autenticação
 ├── core/              # Utilitários e composables compartilhados
