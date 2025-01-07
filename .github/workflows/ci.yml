@@ -37,6 +37,12 @@ jobs:
   test:
     runs-on: ubuntu-latest
     needs: install
+    strategy:
+      matrix:
+        layer:
+          - core
+          - hotels
+          - app
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -55,5 +61,5 @@ jobs:
           path: ~/.pnpm-store
           key: pnpm-store-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
 
-      - name: Run tests
-        run: pnpm test
+      - name: Run tests for ${{ matrix.layer }}
+        run: cd ${{ matrix.layer }} && pnpm install --store ~/.pnpm-store && pnpm test
