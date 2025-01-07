@@ -36,9 +36,9 @@ const emits = defineEmits<{
           )}`"
         />
       </SelectTrigger>
-      <LazySelectContent>
-        <LazySelectGroup>
-          <LazySelectItem
+      <SelectContent>
+        <SelectGroup>
+          <SelectItem
             v-for="(installment, index) in installments"
             :key="installment.installment"
             :value="String(index)"
@@ -63,9 +63,9 @@ const emits = defineEmits<{
                   )
               )
             }}
-          </LazySelectItem>
-        </LazySelectGroup>
-      </LazySelectContent>
+          </SelectItem>
+        </SelectGroup>
+      </SelectContent>
     </Select>
 
     <p v-if="error" class="text-red-500 text-sm mt-1">{{ error }}</p>

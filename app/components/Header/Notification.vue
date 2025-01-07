@@ -1,6 +1,6 @@
 <template>
-  <LazyPopover>
-    <LazyPopoverTrigger as-child>
+  <Popover>
+    <PopoverTrigger as-child>
       <div>
         <BellDot
           v-if="hasNotifications"
@@ -11,8 +11,8 @@
         />
         <Bell v-else :size="24" class="cursor-pointer" color="white" />
       </div>
-    </LazyPopoverTrigger>
-    <LazyPopoverContent class="w-80 py-0">
+    </PopoverTrigger>
+    <PopoverContent class="w-80 py-0">
       <ul v-if="hasNotifications" class="flex flex-col">
         <li
           v-for="notification in notifications"
@@ -30,8 +30,8 @@
         </li>
       </ul>
       <p v-else class="border-b py-5 text-center">Não há notificações.</p>
-    </LazyPopoverContent>
-  </LazyPopover>
+    </PopoverContent>
+  </Popover>
 </template>
 <script setup lang="ts">
 import { useNotificationStore } from "@/store/useNotificationStore";
