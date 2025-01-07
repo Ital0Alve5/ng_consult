@@ -1,4 +1,4 @@
-# Projeto ng_consult
+# Projeto nt_consult
 
 ## Visão Geral
 O projeto foi construído usando **Nuxt 3** com uma estrutura de monorepo, utilizando workspaces do `pnpm` para separar camadas e promover reusabilidade. Ele é composto pelas seguintes camadas:
