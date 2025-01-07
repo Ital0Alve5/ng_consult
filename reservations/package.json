@@ -12,7 +12,6 @@
     "lint": "eslint .",
     "test": "vitest --config vitest.config.ts",
     "test:setup": "node test/setup.ts"
-
   },
   "devDependencies": {
     "@nuxt/eslint": "latest",

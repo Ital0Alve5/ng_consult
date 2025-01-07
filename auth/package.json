@@ -9,7 +9,9 @@
     "build": "nuxt build .playground",
     "generate": "nuxt generate .playground",
     "preview": "nuxt preview .playground",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "test": "vitest --config vitest.config.ts",
+    "test:setup": "node test/setup.ts"
   },
   "devDependencies": {
     "@nuxt/eslint": "latest",
