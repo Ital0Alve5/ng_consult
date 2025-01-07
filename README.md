@@ -72,7 +72,7 @@ Foca em fluxos de reserva, incluindo checkout e atualizações de status.
 
 1. Clone o repositório:
    ```bash
-   git clone <repository-url>
+   git clone git@github.com:Ital0Alve5/ng_consult.git
    cd ng_consult
    ```
 
