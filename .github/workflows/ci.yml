@@ -9,16 +9,37 @@ on:
       - master
 
 jobs:
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 22.3.0
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install dependencies for all layers
+        run: |
+          cd core && pnpm install
+          cd ../auth && pnpm install
+          cd ../hotels && pnpm install
+          cd ../reservations && pnpm install
+          cd ../app && pnpm install
+
   test:
     runs-on: ubuntu-latest
+    needs: install
 
     strategy:
       matrix:
         layer:
           - core
-          - auth
           - hotels
-          - reservations
           - app
 
     steps:
@@ -32,9 +53,6 @@ jobs:
 
       - name: Install pnpm
         run: npm install -g pnpm
-
-      - name: Install dependencies for ${{ matrix.layer }}
-        run: cd ${{ matrix.layer }} && pnpm install
 
       - name: Run tests for ${{ matrix.layer }}
         run: cd ${{ matrix.layer }} && pnpm test
